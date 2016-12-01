@@ -1,14 +1,19 @@
+
+
 (function() {
 
     var canvas = document.getElementById('sample');
 
+    if ( ! canvas || ! canvas.getContext ) { return false; }
+
     var ctx = canvas.getContext('2d');
 
-    var baseGraphPath =
+    var img = new Image();    //新規画像オブジェクト
+    img.src = "./cat.jpg";   //読み込みたい画像のパス
 
-        ctx.beginPath();
     ctx.fillStyle = "#f5f5f5";
-    ctx.fillRect(0, 0, 700, 400);
+    ctx.fillRect(0, 0, 320, 399);
+
 
     canvas.addEventListener('mousedown', onClick, false);
     canvas.addEventListener('mousemove', onMove, false);
@@ -18,14 +23,6 @@
     var defosize = 7;
     var defocolor = "#555555";
     var defoalpha = 1.0;
-
-    //始点
-    var first_X = "";
-    var first_Y = "";
-
-    //終点
-    var end_X = "";
-    var end_Y = "";
 
     var its_width = "";
     var its_height = "";
@@ -40,13 +37,7 @@
         ctx.linSize = defosize;
         ctx.strokeStyle = defocolor;
 
-
-        //    ctx.clearRect(first_X, first_Y, (end_X - first_X), (end_Y - first_Y));
-
-        //    ctx.clearRect(0, 0, canvas.width, canvas.height);
-        //      ctx.strokeRect(first_X, first_Y, its_width,its_height);
-
-        //        NowDrawingRect();
+        ctx.drawImage(img, 0, 0);
 
         for (var i = 0; i < objects.length; i++) {
             ctx.strokeRect(objects[i].X, objects[i].Y, objects[i].WIDTH, objects[i].HEIGHT);
@@ -63,6 +54,7 @@
         ctx.strokeStyle = defocolor;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
         ctx.strokeRect(first_X, first_Y, its_width, its_height);
     }
 
@@ -103,10 +95,11 @@
     }
 
     function drawClear() {
-        first_X = "";
-        first_Y = "";
-        end_X = "";
-        end_Y = "";
+    }
+
+    function eraserAll(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        objects = [];
     }
 
 
@@ -118,6 +111,9 @@
 
 })();
 
+function GetObjects(){
+  return objects;
+}
 
 function object(X, Y, WIDTH, HEIGHT, COL, SIZE) {
     this.X = X;
