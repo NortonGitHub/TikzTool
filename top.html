@@ -14,14 +14,15 @@
     <link rel="stylesheet" href="">
 
 
+    <script type="text/javascript" src="Upload2.js"></script>
 </head>
 
-<body onload="DrawRect()">
+<body>
     <h1>hello!</h1>
     <hr>
 
 
-    <canvas id="sample" width="700" height="400"></canvas>
+    <canvas id="sample" width="320" height="399"></canvas>
     <script type="text/javascript" src="./Canvas.js"></script>
 
     <!--
@@ -31,9 +32,17 @@
     </div>
 -->
     <div class="imgInput">
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <input type="file" name="file1" accept="image/p">
-        <script type="text/javascript" src="Upload2.js"></script>
+    </div>
+    <div class="control">
+      <p>
+      <button type="button" onclick="eraserAll();">消去する</button>
+      </p>
+      <p>
+        <button type="button" onclick="main();">エクスポート</button>
+        <script type="text/javascript" src="./export.js"></script>
+      </p>
     </div>
     <!--/.imgInput-->
 
