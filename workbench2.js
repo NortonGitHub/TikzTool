@@ -17,6 +17,11 @@ $(function(){
 
     var objects = new Array();
 
+    canvas[0].addEventListener('mousedown', onClick, false);
+    canvas[0].addEventListener('mousemove', onMove, false)  ;
+    canvas[0].addEventListener('mouseup', drawEnd, false);
+    canvas[0].addEventListener('mouseout', drawClear, false);
+
     $('#upload').change(function() {
 
         if (!this.files.length){
@@ -40,7 +45,7 @@ $(function(){
             image.src = e.target.result;
         }
         reader.readAsDataURL(file);
-    })
+    });
 
     function DrawRect() {
         ctx.beginPath();
@@ -103,12 +108,30 @@ $(function(){
 
     function drawClear(e) {
     }
+    
+    $('#btn_reset').on('click',function() {
+        $("#reset").resetCanvas();
+        DrawRect();
+    });
 
-    canvas[0].addEventListener('mousedown', onClick, false);
-    canvas[0].addEventListener('mousemove', onMove, false)  ;
-    canvas[0].addEventListener('mouseup', drawEnd, false);
-    canvas[0].addEventListener('mouseout', drawClear, false);
-})
+    $('#btn_back').click(function(){
+        objects.pop();
+        DrawRect();
+    });
+
+    $('#btn_alert').click(function(){
+        alert( parseInt(objects.length));
+    });
+
+
+    $(function(){
+    $.fn.resetCanvas = function(e){
+        objects.length = 0;
+        its_width = "";
+        its_height = ""; 
+    }
+    });
+});
 
 function GetObjects(){
   return objects;
