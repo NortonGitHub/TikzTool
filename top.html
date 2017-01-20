@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
     <title>
         Tikz Maker
     </title>
 
     <meta charset="utf-8">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
 
     <script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
-    <script type="text/javascript" src="workbench2.js"></script>
+    <script type="text/javascript" src="./workbench2.js"></script>
 </head>
 
 <body>
@@ -22,32 +18,13 @@
     <hr>
 
 
-    <div id="Canvas">
-        <!--<canvas id="sample" width="320" height="399"></canvas>-->
-        <canvas id="draw" width="320" height="399"></canvas>
-        <!--<script type="text/javascript" src="./workbench2.js"></script>-->
+    <div>
+        <canvas id="draw" ></canvas>
     </div>
-    <!--
-    <div id="canvasmenu">
-        <div class="menuicon" id="clear">¡Á</div>
-        <div class="menuicon" id="output">³öÁ¦</div>
-    </div>
--->
-    <div class="imgInput">
-        <input id="upload" type="file" name="file1" accept="image/png">
-    </div>
-    
-    <!--
-    <div class="control">
-      <p>
-      <button type="button" onclick="eraserAll();">delete</button>
-      </p>
-      <p>
-        <button type="button" onclick="main();">export</button>
-        <script type="text/javascript" src="./export.js"></script>
-      </p>
-    </div>
-    <!--/.imgInput-->
+
+    <form>
+        <input id="upload" type="file" name="upload" accept="image/jpeg,image/png"><br>
+    </form>
 
     <hr>
 

@@ -1,32 +1,34 @@
+$(function(){
+    $('#upload').change(function() {
 
-$('#upload').change(function() {
-	var canvas = $('#draw').get(0);
+        if (!this.files.length){
+            alert('ファイルが選択されていません');
+            return;
+        }
 
-    if ( ! canvas || ! canvas.getContext ) { return false; }
+       var file = this.files[0];
 
-	var ctx = canvas.getContext('2d');
+       var canvas = $('#draw');
 
-	var file = this.files[0];
+	   var ctx = canvas[0].getContext('2d');
 
-	var image = new Image();
-	var reader = new FileReader();
+        if ( !canvas || !canvas[0].getContext ) { return; }
 
-/*
-    $('#draw').addEventListeneraddEventListener('mousedown', onClick, false);
-    $('#draw').addEventListener('mousemove', onMove, false);
-    $('#draw').addEventListener('mouseup', drawEnd, false);
-    $('#draw').addEventListener('mouseout', drawClear, false);
-*/
-	reader.onload = function(evt){
+	   var image = new Image();
+       var reader = new FileReader();
 
-		image.onload = function(){
-			ctx.drawImage(image,0,0);
-		}
-
-		image.src = evt.target.result;
-	}
-
-	reader.readAsDataURL(file);
-
-}
-);
+	   reader.onload = function(evt){
+            image.onload = function(){
+                // (3) プレビュー(Cnavas)のサイズを指定
+                var cnvsH = 240;
+                var cnvsW = image.naturalWidth*cnvsH/image.naturalHeight;
+                // (4) Cnavasにサイズアトリビュートを設定する
+                canvas.attr('width', cnvsW);
+                canvas.attr('height', cnvsH);
+                ctx.drawImage(image, 0, 0,cnvsW,cnvsH); //canvasに画像を転写
+            }
+            image.src = evt.target.result;
+        }
+        reader.readAsDataURL(file);
+    })
+})
