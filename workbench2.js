@@ -16,6 +16,9 @@ $(function(){
     var its_height = "";
 
     var objects = new Array();
+    var code = new Array();
+
+    var f_name = "";
 
     canvas[0].addEventListener('mousedown', onClick, false);
     canvas[0].addEventListener('mousemove', onMove, false)  ;
@@ -31,7 +34,7 @@ $(function(){
 
        var file = this.files[0];
 
-        if ( !canvas || !canvas[0].getContext ) { return; }
+        if ( !canvas || !canvas[0].getContext) { return; }
 
 	   reader.onload = function(e){
             image.onload = function(){
@@ -45,6 +48,7 @@ $(function(){
             image.src = e.target.result;
         }
         reader.readAsDataURL(file);
+        f_name = file.name;
     });
 
     function DrawRect() {
@@ -75,7 +79,41 @@ $(function(){
         ctx.strokeRect(first_X, first_Y, its_width, its_height);
     }
 
+    function generateCode(){
+        code.length = 0;
+
+        code.push("\\begin{figure}[htbp]\n");
+        code.push("\\centering\n");
+        code.push("\\begin{tikzpicture}\n");
+
+        var str = "\\node[anchor=south west,inner sep=0] at (0,0)";
+
+        str = str + "{\\includegraphics[scale=1.00]{./" + f_name + "}};\n"
+        code.push(str);
+
+        for(var i=0;i < objects.length;i++){
+            var rx = objects[i].X + objects[i].WIDTH;
+            var ry = objects[i].Y + objects[i].HEIGHT;
+            str = "\\draw[red,ultra thick, rounded corners] \n";
+            str = str + "(" + objects[i].X + "," + objects[i].Y + 
+            ") rectangle(" + rx + "," + ry + ");\n";
+            code.push(str);
+            str = "";
+        }
+
+        code.push("\\end{tikzpicture}\n");
+        code.push("\\caption{caption}\n");
+        code.push("\\label{label}\n");
+        code.push("\\end{figure}\n");
+
+        return code;
+    }
+
     function onClick(e) {
+        if(image.src == ""){
+            return;
+        }
+        
         if (e.button === 0) {
             var rect = e.target.getBoundingClientRect();
             var X = (e.clientX - rect.left);
@@ -87,6 +125,11 @@ $(function(){
     }
 
     function onMove(e) {
+
+        if(image.src == ""){
+            return;
+        }
+
         var rect = e.target.getBoundingClientRect();
         var X = (e.clientX - rect.left);
         var Y = (e.clientY - rect.top);
@@ -101,6 +144,11 @@ $(function(){
     }
 
     function drawEnd(e) {
+
+        if(image.src == ""){
+            return;
+        }
+
         objects[objects.length] = new object(first_X, first_Y, its_width, its_height, ctx.strokeStyle, ctx.linSize);
 
         DrawRect();
@@ -131,17 +179,24 @@ $(function(){
         its_height = ""; 
     }
     });
+
+    $('#btn_generate').click(function(){
+        var result = generateCode();
+
+        $('#generate').val(result);
+    });
 });
 
 function GetObjects(){
   return objects;
 }
 
-function object(X, Y, WIDTH, HEIGHT, COL, SIZE) {
+function object(X, Y, WIDTH, HEIGHT, COL, SIZE/*, TYPE*/) {
     this.X = X;
     this.Y = Y;
     this.WIDTH = WIDTH;
     this.HEIGHT = HEIGHT;
     this.COL = COL;
     this.SIZE = SIZE;
+//    this.TYPE = TYPE;
 }

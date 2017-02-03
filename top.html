@@ -13,12 +13,17 @@
     <script type="text/javascript" src="./workbench2.js"></script>
     <link rel="stylesheet" href="./style.css">
         
-    </style>">
+    </style>
 </head>
 
 <body>
     <h1>hello!</h1>
     <hr>
+
+    <form name="control">
+        <button type="button" id="btn_back"> 一つ戻る </button> 
+        <button type="button" id="btn_reset"> リセット </button>
+    </form>
 
     <span class="cross_cursor">
         <div>
@@ -29,11 +34,12 @@
     <form>
         <input id="upload" type="file" name="upload" accept="image/jpeg,image/png"><br>
     </form>
-
+    
     <form name="control">
-        <button type="button" id="btn_back"> 一つ戻る </button> 
-        <button type="button" id="btn_reset"> リセット </button>
+        <button type="button" id="btn_generate">コード生成</button>
     </form>
+
+    <textarea id="generate" class="result"></textarea>
 
     <hr>
 
