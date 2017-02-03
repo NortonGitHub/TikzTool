@@ -82,9 +82,17 @@ $(function(){
     function generateCode(){
         code.length = 0;
 
-        code.push("\\begin{figure}[htbp]\n");
-        code.push("\\centering\n");
-        code.push("\\begin{tikzpicture}\n");
+        const begin_figure = "\\begin{figure}[htbp]\n";
+        const centering = "\\centering\n";
+        const begin_tikz = "\\begin{tikzpicture}\n";
+        const end_tikz = "\\end{tikzpicture}\n";
+        const _caption = "\\caption{caption}\n";
+        const _lebel = "\\label{label}\n";
+        const end_figure ="\\end{figure}\n";
+
+        code.push(begin_figure);
+        code.push(centering);
+        code.push(begin_tikz);
 
         var str = "\\node[anchor=south west,inner sep=0] at (0,0)";
 
@@ -101,10 +109,10 @@ $(function(){
             str = "";
         }
 
-        code.push("\\end{tikzpicture}\n");
-        code.push("\\caption{caption}\n");
-        code.push("\\label{label}\n");
-        code.push("\\end{figure}\n");
+        code.push(end_tikz);
+        code.push(_caption);
+        code.push(_lebel);
+        code.push(end_figure);
 
         return code;
     }
@@ -181,9 +189,13 @@ $(function(){
     });
 
     $('#btn_generate').click(function(){
-        var result = generateCode();
+        var _result = generateCode();
+        var _decision = "";
+        for(var i = 0;i < _result.length;i++){
+            _decision += _result[i];
+        }
 
-        $('#generate').val(result);
+        $('#generate').val(_decision);
     });
 });
 
