@@ -15,8 +15,13 @@ $(function(){
     var its_width = "";
     var its_height = "";
 
+    var cnvsH = 0.0;
+    var cnvsW = 0.0;
+
     var objects = new Array();
     var code = new Array();
+
+    var rect = "";  //canvasのクライアント領域の位置
 
     var f_name = "";
 
@@ -40,10 +45,15 @@ $(function(){
             image.onload = function(){
                 ctx.beginPath();
                 objects.length = 0;
-                var cnvsH = image.naturalHeight;
-                var cnvsW = image.naturalWidth;
+                cnvsH = image.naturalHeight;
+                cnvsW = image.naturalWidth;
                 canvas.attr('width', cnvsW);
                 canvas.attr('height', cnvsH);
+                //ctx.rotate((Math.PI / 180)*180);
+                //ctx.translate(0.0,cnvsH);
+                //ctx.setTransform(1.0,(Math.PI / 180)*180,1.0,0.0,-0.0,cnvsH);
+                //引数の意味は、transform(伸縮x, 傾斜y, 傾斜x, 伸縮y, 移動x, 移動y)
+                //ctx.setTransform(1.0,)
             }
             image.src = e.target.result;
         }
@@ -66,6 +76,7 @@ $(function(){
         }
     }
 
+/*
     function NowDrawingRect() {
         ctx.beginPath();
         ctx.grobalAlpha = defoalpha;
@@ -78,6 +89,7 @@ $(function(){
 
         ctx.strokeRect(first_X, first_Y, its_width, its_height);
     }
+*/
 
     function generateCode(){
         code.length = 0;
@@ -100,11 +112,11 @@ $(function(){
         code.push(str);
 
         for(var i=0;i < objects.length;i++){
-            var rx = objects[i].X + objects[i].WIDTH;
-            var ry = objects[i].Y + objects[i].HEIGHT;
+            var rx = objects[i].TRANS_X + objects[i].WIDTH;
+            var ry = objects[i].TRANS_Y + objects[i].HEIGHT;
             str = "\\draw[red,ultra thick, rounded corners] \n";
-            str = str + "(" + objects[i].X + "," + objects[i].Y + 
-            ") rectangle(" + rx + "," + ry + ");\n";
+            str = str + "(" + objects[i].TRANS_X + "bp," + objects[i].TRANS_Y + 
+            "bp) rectangle(" + rx + "bp," + ry + "bp);\n";
             code.push(str);
             str = "";
         }
@@ -138,15 +150,15 @@ $(function(){
             return;
         }
 
-        var rect = e.target.getBoundingClientRect();
+        rect = e.target.getBoundingClientRect();
         var X = (e.clientX - rect.left);
         var Y = (e.clientY - rect.top);
 
         if (e.buttons === 1 || e.witch === 1) {
-            its_width = (X - first_X)
-            its_height = (Y - first_Y)
+            its_width = (X - first_X);
+            its_height = (Y - first_Y);
 
-            NowDrawingRect();
+            //NowDrawingRect();
         }
         DrawRect();
     }
@@ -157,7 +169,16 @@ $(function(){
             return;
         }
 
-        objects[objects.length] = new object(first_X, first_Y, its_width, its_height, ctx.strokeStyle, ctx.linSize);
+        var _temp_X = first_X;
+        var _temp_Y = first_Y;
+/*
+        if(its_width < 0){
+            var _temp = first_X;
+            first_X = first_X + its_width;
+
+        }
+*/
+        objects[objects.length] = new object(first_X, first_Y, first_X, (cnvsH - first_Y), its_width, its_height, ctx.strokeStyle, ctx.linSize);
 
         DrawRect();
     }
@@ -189,6 +210,7 @@ $(function(){
     });
 
     $('#btn_generate').click(function(){
+
         var _result = generateCode();
         var _decision = "";
         for(var i = 0;i < _result.length;i++){
@@ -197,18 +219,21 @@ $(function(){
 
         $('#generate').val(_decision);
     });
+
+
+    function GetObjects(){
+        return objects;
+    }
+
+    function object(X, Y, TRANS_X,TRANS_Y, WIDTH, HEIGHT, COL, SIZE/*, TYPE*/) {
+        this.X = X;
+        this.Y = Y;
+        this.TRANS_X = TRANS_X;
+        this.TRANS_Y = TRANS_Y;
+        this.WIDTH = WIDTH;
+        this.HEIGHT = HEIGHT;
+        this.COL = COL;
+        this.SIZE = SIZE;
+        //    this.TYPE = TYPE;
+    }
 });
-
-function GetObjects(){
-  return objects;
-}
-
-function object(X, Y, WIDTH, HEIGHT, COL, SIZE/*, TYPE*/) {
-    this.X = X;
-    this.Y = Y;
-    this.WIDTH = WIDTH;
-    this.HEIGHT = HEIGHT;
-    this.COL = COL;
-    this.SIZE = SIZE;
-//    this.TYPE = TYPE;
-}
