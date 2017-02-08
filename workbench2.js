@@ -8,6 +8,8 @@ $(function(){
     var reader = new FileReader();
 
     //----- canvas init
+    const PX_96DPI = 0.75;  
+
     var defosize = 7;
     var defocolor = "#FF0000";
     var defoalpha = 1.0; 
@@ -112,10 +114,10 @@ $(function(){
         code.push(str);
 
         for(var i=0;i < objects.length;i++){
-            var rx = objects[i].TRANS_X + objects[i].WIDTH;
-            var ry = objects[i].TRANS_Y + objects[i].HEIGHT;
-            str = "\\draw[red,ultra thick, rounded corners] \n";
-            str = str + "(" + objects[i].TRANS_X + "bp," + objects[i].TRANS_Y + 
+            var rx = objects[i].TRANS_X2;// + objects[i].WIDTH;
+            var ry = objects[i].TRANS_Y2;// + objects[i].HEIGHT;
+            str = "\\draw[red,ultra thick] \n";
+            str = str + "(" + objects[i].TRANS_X1 + "bp," + objects[i].TRANS_Y1 + 
             "bp) rectangle(" + rx + "bp," + ry + "bp);\n";
             code.push(str);
             str = "";
@@ -157,8 +159,6 @@ $(function(){
         if (e.buttons === 1 || e.witch === 1) {
             its_width = (X - first_X);
             its_height = (Y - first_Y);
-
-            //NowDrawingRect();
         }
         DrawRect();
     }
@@ -169,16 +169,26 @@ $(function(){
             return;
         }
 
-        var _temp_X = first_X;
-        var _temp_Y = first_Y;
-/*
-        if(its_width < 0){
-            var _temp = first_X;
-            first_X = first_X + its_width;
+        rect = e.target.getBoundingClientRect();
+        var X = (e.clientX - rect.left);
+        var Y = (e.clientY - rect.top);
 
+        if(first_X > X){
+            var temp = first_X;
+            first_X = X;
+            X = temp;
         }
-*/
-        objects[objects.length] = new object(first_X, first_Y, first_X, (cnvsH - first_Y), its_width, its_height, ctx.strokeStyle, ctx.linSize);
+
+        if(first_Y > Y){
+            var temp = first_Y;
+            first_Y = Y;
+            Y = temp;
+        }
+
+        its_width = (X - first_X);
+        its_height = (Y - first_Y);
+
+        objects[objects.length] = new object(first_X, first_Y, first_X * PX_96DPI, (cnvsH - first_Y) * PX_96DPI, X * PX_96DPI, (cnvsH - Y) * PX_96DPI, its_width, its_height, ctx.strokeStyle, ctx.linSize);
 
         DrawRect();
     }
@@ -225,11 +235,13 @@ $(function(){
         return objects;
     }
 
-    function object(X, Y, TRANS_X,TRANS_Y, WIDTH, HEIGHT, COL, SIZE/*, TYPE*/) {
+    function object(X, Y, TRANS_X1,TRANS_Y1, TRANS_X2, TRANS_Y2, WIDTH, HEIGHT, COL, SIZE/*, TYPE*/) {
         this.X = X;
         this.Y = Y;
-        this.TRANS_X = TRANS_X;
-        this.TRANS_Y = TRANS_Y;
+        this.TRANS_X1 = TRANS_X1;
+        this.TRANS_Y1 = TRANS_Y1;
+        this.TRANS_X2 = TRANS_X2;
+        this.TRANS_Y2 = TRANS_Y2;
         this.WIDTH = WIDTH;
         this.HEIGHT = HEIGHT;
         this.COL = COL;
