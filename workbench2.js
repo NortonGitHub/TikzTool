@@ -10,6 +10,9 @@ $(function(){
     //----- canvas init
     const PX_96DPI = 0.75;  
 
+    var X_DPI = 0;
+    var Y_DPI = 0;
+
     var defosize = 7;
     var defocolor = "#FF0000";
     var defoalpha = 1.0; 
@@ -58,6 +61,8 @@ $(function(){
                 //ctx.setTransform(1.0,)
             }
             image.src = e.target.result;
+            //X_DPI = window.parent.screen.width//screen.logicalXDPI;
+            //Y_DPI = window.parent.screen.height;//screen.logicalYDPI;
         }
         reader.readAsDataURL(file);
         f_name = file.name;
