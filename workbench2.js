@@ -235,6 +235,9 @@ $(function(){
         $('#generate').val(_decision);
     });
 
+    $('#btn_toClipboard').click(function(){
+        var clipboard = new Clipboard('.btn_copy');
+    });
 
     function GetObjects(){
         return objects;
