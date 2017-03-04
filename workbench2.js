@@ -7,15 +7,17 @@ $(function(){
     var image = new Image();
     var reader = new FileReader();
 
+    var paint_mode = "line";
+
     //----- canvas init
-    const PX_96DPI = 0.75;  
+    const PX_96DPI = 0.75;
 
     var X_DPI = 0;
     var Y_DPI = 0;
 
     var defosize = 7;
     var defocolor = "#FF0000";
-    var defoalpha = 1.0; 
+    var defoalpha = 1.0;
 
     var its_width = "";
     var its_height = "";
@@ -79,7 +81,46 @@ $(function(){
         ctx.drawImage(image, 0, 0);
 
         for (var i = 0; i < objects.length; i++) {
-            ctx.strokeRect(objects[i].X, objects[i].Y, objects[i].WIDTH, objects[i].HEIGHT);
+        //    DrawFigure(objects[i]);
+        }
+    }
+
+    function DrawLine(){
+        ctx.grobalAlpha = defoalpha;
+
+        ctx.lineCap = "butt";
+        ctx.lineSize = defosize;
+        ctx.strokeStyle = defocolor;
+
+        ctx.drawImage(image, 0, 0);
+
+        for (var i = 0; i < objects.length; i++) {
+        //    DrawFigure(objects[i]);
+        }
+    }
+
+    function DrawFigure(/*obj*/){
+
+        ctx.grobalAlpha = defoalpha;
+
+        ctx.lineCap = "butt";
+        ctx.lineSize = defosize;
+        ctx.strokeStyle = defocolor;
+
+        ctx.drawImage(image, 0, 0);
+
+        for (var i = 0; i < objects.length; i++) {
+            var obj = objects[i];
+            if(obj.TYPE == "line"){
+                ctx.beginPath();
+                ctx.moveTo(obj.X, obj.Y);
+                ctx.lineTo(obj.X + obj.WIDTH, obj.Y + obj.HEIGHT);
+                ctx.closePath();
+                ctx.stroke();
+            }
+            else if(obj.TYPE == "rect"){
+                ctx.strokeRect(obj.X, obj.Y, obj.WIDTH, obj.HEIGHT);
+            }
         }
     }
 
@@ -121,9 +162,12 @@ $(function(){
         for(var i=0;i < objects.length;i++){
             var rx = objects[i].TRANS_X2;// + objects[i].WIDTH;
             var ry = objects[i].TRANS_Y2;// + objects[i].HEIGHT;
+
+            var fig_format = GetFigureTypeCode(objects[i].TYPE);
+
             str = "\\draw[red,ultra thick] \n";
-            str = str + "(" + objects[i].TRANS_X1 + "bp," + objects[i].TRANS_Y1 + 
-            "bp) rectangle(" + rx + "bp," + ry + "bp);\n";
+            str = str + "(" + objects[i].TRANS_X1 + "bp," + objects[i].TRANS_Y1 +
+            "bp)" + fig_format +"(" + rx + "bp," + ry + "bp);\n";
             code.push(str);
             str = "";
         }
@@ -136,11 +180,22 @@ $(function(){
         return code;
     }
 
+    function GetFigureTypeCode(type){
+        if(type == "line"){
+            return "--";
+        }
+        else if(type == "rect"){
+            return "rectangle";
+        }
+        return "";
+    }
+
+
     function onClick(e) {
         if(image.src == ""){
             return;
         }
-        
+
         if (e.button === 0) {
             var rect = e.target.getBoundingClientRect();
             var X = (e.clientX - rect.left);
@@ -165,7 +220,8 @@ $(function(){
             its_width = (X - first_X);
             its_height = (Y - first_Y);
         }
-        DrawRect();
+        //DrawRect();
+        DrawFigure();
     }
 
     function drawEnd(e) {
@@ -178,6 +234,7 @@ $(function(){
         var X = (e.clientX - rect.left);
         var Y = (e.clientY - rect.top);
 
+        if(paint_mode != "line"){
         if(first_X > X){
             var temp = first_X;
             first_X = X;
@@ -189,26 +246,30 @@ $(function(){
             first_Y = Y;
             Y = temp;
         }
+        }
 
         its_width = (X - first_X);
         its_height = (Y - first_Y);
 
-        objects[objects.length] = new object(first_X, first_Y, first_X * PX_96DPI, (cnvsH - first_Y) * PX_96DPI, X * PX_96DPI, (cnvsH - Y) * PX_96DPI, its_width, its_height, ctx.strokeStyle, ctx.linSize);
+        objects[objects.length] = new object(first_X, first_Y, first_X * PX_96DPI, (cnvsH - first_Y) * PX_96DPI, X * PX_96DPI, (cnvsH - Y) * PX_96DPI, its_width, its_height, ctx.strokeStyle, ctx.linSize, paint_mode);
 
-        DrawRect();
+        //DrawRect();
+        DrawFigure();
     }
 
     function drawClear(e) {
     }
-    
+
     $('#btn_reset').on('click',function() {
         $("#reset").resetCanvas();
-        DrawRect();
+        DrawFigure();
+        //DrawRect();
     });
 
     $('#btn_back').click(function(){
         objects.pop();
-        DrawRect();
+        DrawFigure();
+        //DrawRect();
     });
 
     $('#btn_alert').click(function(){
@@ -220,7 +281,7 @@ $(function(){
     $.fn.resetCanvas = function(e){
         objects.length = 0;
         its_width = "";
-        its_height = ""; 
+        its_height = "";
     }
     });
 
@@ -239,11 +300,17 @@ $(function(){
         var clipboard = new Clipboard('.btn_copy');
     });
 
+    $('#paint_mode').change(function(){
+        paint_mode = $(this).val();
+    }
+    );
+
+
     function GetObjects(){
         return objects;
     }
 
-    function object(X, Y, TRANS_X1,TRANS_Y1, TRANS_X2, TRANS_Y2, WIDTH, HEIGHT, COL, SIZE/*, TYPE*/) {
+    function object(X, Y, TRANS_X1,TRANS_Y1, TRANS_X2, TRANS_Y2, WIDTH, HEIGHT, COL, SIZE, TYPE) {
         this.X = X;
         this.Y = Y;
         this.TRANS_X1 = TRANS_X1;
@@ -254,6 +321,6 @@ $(function(){
         this.HEIGHT = HEIGHT;
         this.COL = COL;
         this.SIZE = SIZE;
-        //    this.TYPE = TYPE;
+        this.TYPE = TYPE;
     }
 });
