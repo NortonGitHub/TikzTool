@@ -10,6 +10,7 @@
     <meta charset="utf-8">
 
     <script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.3/clipboard.min.js"></script>
     <script type="text/javascript" src="./workbench2.js"></script>
     <link rel="stylesheet" href="./style.css">
         
@@ -17,12 +18,19 @@
 </head>
 
 <body>
-    <h1>hello!</h1>
+    <h1>Tikz Maker</h1>
+    <ul>
+        <li>推奨ブラウザ:Google Chrome</li>
+        <li>画像のDPI(解像度)は96にしてください</li>
+    </ul>
     <hr>
-
     <form name="control">
         <button type="button" id="btn_back"> 一つ戻る </button> 
         <button type="button" id="btn_reset"> リセット </button>
+        <select id="paint_mode" size="1">
+            <option value="line">直線</option>
+            <option value="rect">矩形</option>
+        </select>
     </form>
 
     <span class="cross_cursor">
@@ -37,9 +45,10 @@
     
     <form name="control">
         <button type="button" id="btn_generate">コード生成</button>
+        <button type="button" id="btn_toClipboard" class="btn_copy" data-clipboard-target="#generate">クリップボードにコピー</button>
     </form>
 
-    <textarea id="generate" class="result"></textarea>
+    <textarea id="generate" class="result">ここに表示</textarea>
 
     <hr>
 
