@@ -8,6 +8,7 @@ $(function(){
     var reader = new FileReader();
 
     var paint_mode = "line";
+    var drawing = false;
 
     //----- canvas init
     const PX_96DPI = 0.75;
@@ -70,37 +71,7 @@ $(function(){
         f_name = file.name;
     });
 
-    function DrawRect() {
-        ctx.beginPath();
-        ctx.grobalAlpha = defoalpha;
-
-        ctx.lineCap = "butt";
-        ctx.lineSize = defosize;
-        ctx.strokeStyle = defocolor;
-
-        ctx.drawImage(image, 0, 0);
-
-        for (var i = 0; i < objects.length; i++) {
-        //    DrawFigure(objects[i]);
-        }
-    }
-
-    function DrawLine(){
-        ctx.grobalAlpha = defoalpha;
-
-        ctx.lineCap = "butt";
-        ctx.lineSize = defosize;
-        ctx.strokeStyle = defocolor;
-
-        ctx.drawImage(image, 0, 0);
-
-        for (var i = 0; i < objects.length; i++) {
-        //    DrawFigure(objects[i]);
-        }
-    }
-
-    function DrawFigure(/*obj*/){
-
+    function DrawFigure(){
         ctx.grobalAlpha = defoalpha;
 
         ctx.lineCap = "butt";
@@ -124,20 +95,45 @@ $(function(){
         }
     }
 
-/*
-    function NowDrawingRect() {
+
+    function NowDrawing(now_X, now_Y) {
         ctx.beginPath();
-        ctx.grobalAlpha = defoalpha;
 
-        ctx.lineCap = "butt";
-        ctx.lineSize = defosize;
-        ctx.strokeStyle = defocolor;
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.strokeRect(first_X, first_Y, its_width, its_height);
+        ctx.moveTo(first_X, first_Y);
+
+        if(paint_mode == "line"){
+            ctx.lineTo(now_X, now_Y);
+        }
+        else if(paint_mode == "rect"){
+
+            var _fX = first_X, _fY = first_Y;
+            var _nX = now_X, _nY = now_Y;
+
+            if(_fX > _nX){
+                var temp = _fX;
+                _fX = _nX;
+                _nX = temp;
+            }
+
+            if(_fY > _nY){
+                var temp = _fY;
+                _fY = _nY;
+                _nY = temp;
+            }
+
+             var _width = _nX - _fX
+            var _height = _nY - _fY;
+
+            ctx.rect(_fX,_fY,_width,_height);
+
+        }
+
+        ctx.closePath();
+        ctx.stroke();
     }
-*/
+
 
     function generateCode(){
         code.length = 0;
@@ -203,12 +199,14 @@ $(function(){
 
             first_X = X;
             first_Y = Y;
+
+            drawing = true;
         }
     }
 
     function onMove(e) {
 
-        if(image.src == ""){
+        if(image.src == "" || drawing != true){
             return;
         }
 
@@ -222,6 +220,7 @@ $(function(){
         }
         //DrawRect();
         DrawFigure();
+        NowDrawing(X, Y);
     }
 
     function drawEnd(e) {
@@ -255,6 +254,8 @@ $(function(){
 
         //DrawRect();
         DrawFigure();
+
+        drawing = false;
     }
 
     function drawClear(e) {
