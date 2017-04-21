@@ -9,6 +9,7 @@ $(function(){
 
     var paint_mode = "line";
     var drawing = false;
+    var pen_color = "red";
 
     //----- canvas init
     const PX_96DPI = 0.75;
@@ -17,7 +18,7 @@ $(function(){
     var Y_DPI = 0;
 
     var defosize = 7;
-    var defocolor = "#FF0000";
+    var defocolor = "red";
     var defoalpha = 1.0;
 
     var its_width = "";
@@ -76,12 +77,12 @@ $(function(){
 
         ctx.lineCap = "butt";
         ctx.lineSize = defosize;
-        ctx.strokeStyle = defocolor;
 
         ctx.drawImage(image, 0, 0);
 
         for (var i = 0; i < objects.length; i++) {
             var obj = objects[i];
+            ctx.strokeStyle = obj.COL;
             if(obj.TYPE == "line"){
                 ctx.beginPath();
                 ctx.moveTo(obj.X, obj.Y);
@@ -99,9 +100,9 @@ $(function(){
     function NowDrawing(now_X, now_Y) {
         ctx.beginPath();
 
-
-
         ctx.moveTo(first_X, first_Y);
+
+        ctx.strokeStyle = pen_color;
 
         if(paint_mode == "line"){
             ctx.lineTo(now_X, now_Y);
@@ -161,7 +162,7 @@ $(function(){
 
             var fig_format = GetFigureTypeCode(objects[i].TYPE);
 
-            str = "\\draw[red,ultra thick] \n";
+            str = "\\draw[" + objects[i].COL + ",ultra thick] \n";
             str = str + "(" + objects[i].TRANS_X1 + "bp," + objects[i].TRANS_Y1 +
             "bp)" + fig_format +"(" + rx + "bp," + ry + "bp);\n";
             code.push(str);
@@ -250,7 +251,8 @@ $(function(){
         its_width = (X - first_X);
         its_height = (Y - first_Y);
 
-        objects[objects.length] = new object(first_X, first_Y, first_X * PX_96DPI, (cnvsH - first_Y) * PX_96DPI, X * PX_96DPI, (cnvsH - Y) * PX_96DPI, its_width, its_height, ctx.strokeStyle, ctx.linSize, paint_mode);
+        objects[objects.length] = new object(first_X, first_Y, first_X * PX_96DPI, (cnvsH - first_Y) * PX_96DPI, X * PX_96DPI, (cnvsH - Y) * PX_96DPI,
+                     its_width, its_height, pen_color, ctx.linSize, paint_mode);
 
         //DrawRect();
         DrawFigure();
@@ -306,6 +308,9 @@ $(function(){
     }
     );
 
+    $('#select-color').change(function(){
+        pen_color = $(this).val();
+    });
 
     function GetObjects(){
         return objects;

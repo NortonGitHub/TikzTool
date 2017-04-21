@@ -24,14 +24,38 @@
         <li>画像のDPI(解像度)は96にしてください</li>
     </ul>
     <hr>
+    <div id="controls">
     <form name="control">
         <button type="button" id="btn_back"> 一つ戻る </button> 
+
         <button type="button" id="btn_reset"> リセット </button>
         <select id="paint_mode" size="1">
             <option value="line">直線</option>
             <option value="rect">矩形</option>
         </select>
+        <!--暫定的設置：のちの作業で違うデザインを採用-->
+        <select id="select-color">
+            <option value="red">red</option>
+            <option value="black">black</option>
+            <option value="blue">blue</option>
+            <option value="white">white</option>
+        </select>
     </form>
+<!--
+    <div id="select-color">
+        <div style="background-color: black;"></div>
+    </div>    
+-->
+    </div>
+
+<!--
+    <div id="select-colors" class="palette" style="display: block;">
+        <div style="background-color:black;"></div>
+        <div style="background-color:white;"></div>
+        <div style="background-color:red;"></div>
+        <div style="background-color:blue;"></div>
+    </div>
+-->
 
     <span class="cross_cursor">
         <div>
